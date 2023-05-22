@@ -9,11 +9,19 @@ def windows2linux(windows_path):
     linux_path = '/mnt/' + drive_letter_path.lower() + windows_path.replace('\\', '/').lstrip('C:')
     return linux_path
 
+def linux2windows(linux_path):
+    drive_letter = linux_path.split('/', 3)[2].upper()
+    windows_path = linux_path.replace('/mnt/' + drive_letter.lower(), '').replace('/', '\\').lstrip('\\')
+    return drive_letter + ":\\" + windows_path
+
 def scan_photos(directory, output_directory):
     known_faces = {}  # Dictionary to store known faces and their corresponding photo locations
 
     # Loop through all files in the directory
     for filename in os.listdir(directory):
+        if filename.startswith("._"):
+            continue
+
         if any(filename.endswith(file_type) for file_type in file_types):
             photo_path = os.path.join(directory, filename)
             
@@ -63,5 +71,7 @@ output_windows = r'C:\Users\amazi\Documents\GitHub\album-maker'
 
 output_directory = windows2linux(output_windows)
 directory = windows2linux(windows_path)
+
+print(linux2windows(windows2linux(windows_path)))
 
 scan_photos(directory, output_directory)
