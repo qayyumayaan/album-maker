@@ -3,7 +3,7 @@ import face_recognition
 from PIL import Image
 from tqdm import tqdm as tqdm_progress
 
-file_types = [".jpg", ".png", ".gif", ".bmp"]
+file_types = [".jpg", ".png", ".gif", ".bmp", ".tiff"]
 
 def windows2linux(windows_path):
     drive_letter_path = windows_path.split('\\', 1)[0].rstrip(':')
@@ -27,7 +27,9 @@ def scan_photos(directory, output_directory):
         if filename.startswith("._"):
             continue
 
-        if any(filename.endswith(file_type) for file_type in file_types):
+        if not any(filename.lower().endswith(file_type.lower()) for file_type in file_types):
+            print("not processed: " + filename)
+        else:
             photo_path = os.path.join(directory, filename)
             
             try:
