@@ -1,6 +1,6 @@
 import os
 import face_recognition
-import pickle
+from PIL import Image
 
 file_types = [".jpg", ".png", ".gif", ".bmp"]
 
@@ -23,11 +23,10 @@ def scan_photos(directory, output_directory):
                 print(f"Exception: {e}")
                 continue
             
-            image = face_recognition.load_image_file(photo_path)
             face_locations = face_recognition.face_locations(image)
             face_encodings = face_recognition.face_encodings(image, face_locations)
 
-            for face_encoding in face_encodings:
+            for face_encoding, face_location in zip(face_encodings, face_locations):
                 # Check if the face is already known
                 matches = face_recognition.compare_faces(list(known_faces.values()), face_encoding)
 
@@ -39,6 +38,16 @@ def scan_photos(directory, output_directory):
                     # Face is unknown, create a new person entry
                     person = "Person " + str(len(known_faces) + 1)
                     known_faces[person] = face_encoding
+                    
+                    # Save the first image of the person
+                    first_image_path = os.path.join(output_directory, person + "_first_image.jpg")
+                    Image.fromarray(image).save(first_image_path)
+
+                    # Save the headshot of the person
+                    top, right, bottom, left = face_location
+                    headshot = image[top:bottom, left:right]
+                    headshot_path = os.path.join(output_directory, person + ".jpg")
+                    Image.fromarray(headshot).save(headshot_path)
 
                 # Append photo location to the person's album
                 album_path = os.path.join(output_directory, person + ".txt")
@@ -48,16 +57,11 @@ def scan_photos(directory, output_directory):
     print("Scanning complete!")
 
 
-
 # Provide the directory containing the photos
 windows_path = r'C:\Users\amazi\Downloads\2001'
-
 output_windows = r'C:\Users\amazi\Documents\GitHub\album-maker'
 
 output_directory = windows2linux(output_windows)
-
 directory = windows2linux(windows_path)
-print(directory)
 
-# scan_photos(directory, output_directory)
 scan_photos(directory, output_directory)
