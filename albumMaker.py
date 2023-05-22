@@ -6,14 +6,17 @@ from tqdm import tqdm as tqdm_progress
 file_types = [".jpg", ".png", ".gif", ".bmp", ".tiff"]
 
 def windows2linux(windows_path):
-    drive_letter_path = windows_path.split('\\', 1)[0].rstrip(':')
-    linux_path = '/mnt/' + drive_letter_path.lower() + windows_path.replace('\\', '/').lstrip('C:')
+    drive, path = windows_path[0], windows_path[3:]
+    path = path.replace("\\", "/")
+    linux_path = "/mnt/{}/{}".format(drive.lower(), path)
     return linux_path
 
 def linux2windows(linux_path):
-    drive_letter = linux_path.split('/', 3)[2].upper()
-    windows_path = linux_path.replace('/mnt/' + drive_letter.lower(), '').replace('/', '\\').lstrip('\\')
-    return drive_letter + ":\\" + windows_path
+    path_components = linux_path.split("/")
+    drive, path = path_components[2], "/".join(path_components[3:])
+    path = path.replace("/", "\\")
+    windows_path = "{}:\\{}".format(drive.upper(), path)
+    return windows_path
 
 def scan_photos(directory, output_directory):
     known_faces = {}  # Dictionary to store known faces and their corresponding photo locations
@@ -72,6 +75,7 @@ def scan_photos(directory, output_directory):
     print("Processing complete!")
 
 
+
 # Provide the directory containing the photos
 windows_path = r'C:\Users\amazi\Downloads\2001'
 output_windows = r'C:\Users\amazi\Downloads\people-album'
@@ -79,8 +83,5 @@ output_windows = r'C:\Users\amazi\Downloads\people-album'
 output_directory = windows2linux(output_windows)
 directory = windows2linux(windows_path)
 
-# print(linux2windows(windows2linux(windows_path)))
-
-# print(len(os.listdir(directory)))
 scan_photos(directory, output_directory)
 
