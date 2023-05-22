@@ -1,6 +1,7 @@
 import os
 import face_recognition
 from PIL import Image
+from tqdm import tqdm as tqdm_progress
 
 file_types = [".jpg", ".png", ".gif", ".bmp"]
 
@@ -17,8 +18,12 @@ def linux2windows(linux_path):
 def scan_photos(directory, output_directory):
     known_faces = {}  # Dictionary to store known faces and their corresponding photo locations
 
+    file_list = os.listdir(directory)
+
+
     # Loop through all files in the directory
-    for filename in os.listdir(directory):
+    for filename in tqdm_progress(file_list):
+            
         if filename.startswith("._"):
             continue
 
@@ -60,18 +65,20 @@ def scan_photos(directory, output_directory):
                 # Append photo location to the person's album
                 album_path = os.path.join(output_directory, person + ".txt")
                 with open(album_path, "a") as album_file:
-                    album_file.write(photo_path + "\n")
+                    album_file.write(linux2windows(photo_path) + "\n")
 
-    print("Scanning complete!")
+    print("Processing complete!")
 
 
 # Provide the directory containing the photos
 windows_path = r'C:\Users\amazi\Downloads\2001'
-output_windows = r'C:\Users\amazi\Documents\GitHub\album-maker'
+output_windows = r'C:\Users\amazi\Downloads\people-album'
 
 output_directory = windows2linux(output_windows)
 directory = windows2linux(windows_path)
 
-print(linux2windows(windows2linux(windows_path)))
+# print(linux2windows(windows2linux(windows_path)))
 
+# print(len(os.listdir(directory)))
 scan_photos(directory, output_directory)
+
