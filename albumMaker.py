@@ -43,7 +43,8 @@ def directorySearch(directory):
             if isImageFile(item):
                 imageDetected(itemWithPath)
             else:
-                print(linux2windows(itemWithPath))
+                with open(os.path.join(output_directory, "Unprocessed.txt"), "a") as album_file:
+                    album_file.write(linux2windows(itemWithPath) + "\n")
                 
             
 
@@ -58,7 +59,7 @@ def imageDetected(itemWithPath):
     face_encodings = face_recognition.face_encodings(image, face_locations)
 
     for face_encoding, face_location in zip(face_encodings, face_locations):
-        # Check if the face is already known
+
         matches = face_recognition.compare_faces(list(known_faces.values()), face_encoding)
 
         if any(matches):
@@ -72,7 +73,6 @@ def imageDetected(itemWithPath):
             person = "Person " + str(len(known_faces) + 1)
             known_faces[person] = face_encoding
             
-            # Save the first image of the person
             saveFirstImage(person, output_directory, image)
 
             saveHeadshot(person, output_directory, image, face_location)
