@@ -15,30 +15,35 @@ def linux2windows(linux_path):
     windows_path = "{}:\\{}".format(drive.upper(), path)
     return windows_path
 
-def save_first_image(person, output_directory, image):
+def saveFirstImage(person, output_directory, image):
     first_image_path = os.path.join(output_directory, person + "_first_image.jpg")
     Image.fromarray(image).save(first_image_path)
 
 
-def save_headshot(person, output_directory, image, face_location):
+def saveHeadshot(person, output_directory, image, face_location):
     top, right, bottom, left = face_location
     headshot = image[top:bottom, left:right]
     headshot_path = os.path.join(output_directory, person + ".jpg")
     Image.fromarray(headshot).save(headshot_path)
 
 
+def addEntryInAlbumTXTFile(person, photo_path, output_directory):
+    album_path = os.path.join(output_directory, person + ".txt")
+    with open(album_path, "a") as album_file:
+        album_file.write(linux2windows(photo_path) + "\n")
 
-def dfs_directory_search(directory):
+
+def directorySearch(directory):
     for item in os.listdir(directory):
         itemWithPath = os.path.join(directory, item)
         if os.path.isdir(itemWithPath):
-            dfs_directory_search(itemWithPath)
+            directorySearch(itemWithPath)
             
         elif os.path.isfile(itemWithPath):
-            if is_image_file(item):
+            if isImageFile(item):
                 imageDetected(item, itemWithPath)
 
-def is_image_file(filename):
+def isImageFile(filename):
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', ".tiff"]
     file_ext = os.path.splitext(filename)[1].lower()
     return file_ext in image_extensions
@@ -62,9 +67,11 @@ def imageDetected(item, itemWithPath):
             known_faces[person] = face_encoding
             
             # Save the first image of the person
-            save_first_image(person, output_directory, image)
+            saveFirstImage(person, output_directory, image)
 
-            save_headshot(person, output_directory, image, face_location)
+            saveHeadshot(person, output_directory, image, face_location)
+            
+            addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
 
         # # Append photo location to the person's album
         # album_path = os.path.join(output_directory, person + ".txt")
@@ -79,7 +86,7 @@ directory = windows2linux(windows_path)
 
 known_faces = {} 
 try:
-    dfs_directory_search(directory)
+    directorySearch(directory)
     print("Success!")
 except Exception as e:
     print(f"Exception: {e}")
