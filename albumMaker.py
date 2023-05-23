@@ -34,6 +34,7 @@ def addEntryInAlbumTXTFile(person, photo_path, output_directory):
 
 
 def directorySearch(directory):
+    print(directory)
     for item in os.listdir(directory):
         itemWithPath = os.path.join(directory, item)
         if os.path.isdir(itemWithPath):
