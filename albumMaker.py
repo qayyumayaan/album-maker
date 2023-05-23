@@ -92,7 +92,8 @@ try:
     directorySearch(directory)
     print("Success!")
     import pickle
-    with open('known_faces.pickle', 'wb') as file:
+    outputPickleLocation = os.path.join(output_directory, "known_faces.pickle")
+    with open(outputPickleLocation, 'wb') as file:
         pickle.dump(known_faces, file)
 except Exception as e:
     print(f"Exception: {e}")
