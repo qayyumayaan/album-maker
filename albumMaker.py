@@ -16,7 +16,7 @@ def linux2windows(linux_path):
     return windows_path
 
 def saveFirstImage(person, output_directory, image):
-    first_image_path = os.path.join(output_directory, person + "_first_image.jpg")
+    first_image_path = os.path.join(output_directory, person + " first_image.jpg")
     Image.fromarray(image).save(first_image_path)
 
 
@@ -65,6 +65,8 @@ def imageDetected(itemWithPath):
             # Face is already known, find the matching person
             face_index = matches.index(True)
             person = list(known_faces.keys())[face_index]
+            addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
+
         else:
             # Face is unknown, create a new person entry
             person = "Person " + str(len(known_faces) + 1)
