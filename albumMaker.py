@@ -41,7 +41,8 @@ def directorySearch(directory):
             
         elif os.path.isfile(itemWithPath):
             if isImageFile(item):
-                imageDetected(itemWithPath)
+                if not item.startswith("._"):
+                    imageDetected(itemWithPath)
             else:
                 with open(os.path.join(output_directory, "Unprocessed.txt"), "a") as album_file:
                     album_file.write(linux2windows(itemWithPath) + "\n")
@@ -81,7 +82,7 @@ def imageDetected(itemWithPath):
 
 
 # Example usage
-windows_path = r'C:\Users\amazi\Downloads\2001'
+windows_path = r'E:\Pictures'
 output_windows = r'C:\Users\amazi\Downloads\people-album'
 output_directory = windows2linux(output_windows)
 directory = windows2linux(windows_path)
