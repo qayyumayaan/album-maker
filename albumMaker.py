@@ -39,6 +39,7 @@ def directorySearch(directory):
         itemWithPath = os.path.join(directory, item)
         if os.path.isdir(itemWithPath):
             directorySearch(itemWithPath)
+            print(directory)
             
         elif os.path.isfile(itemWithPath):
             if isImageFile(item):
@@ -47,7 +48,7 @@ def directorySearch(directory):
             else:
                 with open(os.path.join(output_directory, "Unprocessed.txt"), "a") as album_file:
                     album_file.write(linux2windows(itemWithPath) + "\n")
-                
+               
             
 
 def isImageFile(filename):
@@ -56,7 +57,12 @@ def isImageFile(filename):
     return file_ext in image_extensions
 
 def imageDetected(itemWithPath):
-    image = face_recognition.load_image_file(itemWithPath)
+    try:
+        image = face_recognition.load_image_file(itemWithPath)
+    except Exception as e:
+        print(f"Exception: {e}")
+        return False
+        
     face_locations = face_recognition.face_locations(image)
     face_encodings = face_recognition.face_encodings(image, face_locations)
 
@@ -80,6 +86,7 @@ def imageDetected(itemWithPath):
             saveHeadshot(person, output_directory, image, face_location)
             
             addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
+    return True
 
 
 # Example usage
