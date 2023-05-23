@@ -65,6 +65,11 @@ def imageDetected(itemWithPath):
         
     face_locations = face_recognition.face_locations(image)
     face_encodings = face_recognition.face_encodings(image, face_locations)
+    
+    if (face_locations == [] or face_encodings == []):
+        with open(os.path.join(output_directory, "NoFacesDetected.txt"), "a") as album_file:
+            album_file.write(linux2windows(itemWithPath) + "\n")
+        return False
 
     for face_encoding, face_location in zip(face_encodings, face_locations):
 
