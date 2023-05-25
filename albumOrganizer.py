@@ -22,8 +22,18 @@ def move_single_link_files(source_folder):
 
             # Check the number of lines in the file
             if len(lines) == 1:
-                # Move the file to the destination folder
+                # Move the relevant files    to the destination folder
                 shutil.move(file_path, os.path.join(destination_folder, file_name))
+
+
+                # Move the corresponding image file if it exists
+                image_file = os.path.splitext(file_path)[0] + ' first_image.jpg' 
+                if os.path.exists(image_file):
+                    shutil.move(image_file, os.path.join(destination_folder, os.path.basename(image_file)))
+                    
+                image_file = os.path.splitext(file_path)[0] + '.jpg'  
+                if os.path.exists(image_file):
+                    shutil.move(image_file, os.path.join(destination_folder, os.path.basename(image_file)))
     print("Success!")
 
 # Usage example
