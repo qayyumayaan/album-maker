@@ -16,3 +16,8 @@ def isImageFile(filename):
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', ".tiff"]
     file_ext = os.path.splitext(filename)[1].lower()
     return file_ext in image_extensions
+
+def addEntryInAlbumTXTFile(person, photo_path, output_directory):
+    album_path = os.path.join(output_directory, person + ".txt")
+    with open(album_path, "a") as album_file:
+        album_file.write(linux2windows(photo_path) + "\n")

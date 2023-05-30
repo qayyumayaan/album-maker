@@ -1,4 +1,4 @@
-from coreDependencies import windows2linux, linux2windows, isImageFile
+from coreDependencies import windows2linux, linux2windows, isImageFile, addEntryInAlbumTXTFile
 import os
 import face_recognition
 from PIL import Image
@@ -30,17 +30,15 @@ def imageDetected(itemWithPath):
     face_locations = face_recognition.face_locations(image)
     face_encodings = face_recognition.face_encodings(image, face_locations)
     
-    output_win = r"C:\Users\amazi\Downloads"
-    output_directory = windows2linux(output_win)
-    
     for i in range(len(face_locations)):
-        saveHeadshot(str(i), output_directory, image, face_locations[i])
-    print(face_locations)
-    print(face_encodings)
-    
-knownFacesLibrary = 0
+        person = face_encodings[i]
+        for j in range(numDictionaryFaces):
+            match = face_recognition.compare_faces(knownFacesLibrary[j], person)
+            if (match):
+                addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
+                
+
 def importDictionary(inputDictPath):
-    numFaces = 0
     for item in os.listdir(inputDictPath):
         itemWithPath = os.path.join(inputDictPath, item)
         if isImageFile(item):
@@ -49,7 +47,8 @@ def importDictionary(inputDictPath):
             numFaces += 1
         
     
-
+knownFacesLibrary = 0
+numDictionaryFaces = 0
 inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candidates\actual")
 output_directory = windows2linux(r"C:\Users\amazi\Downloads\output")
 input_directory = windows2linux(r"C:\Users\amazi\Downloads\test")
