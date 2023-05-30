@@ -14,7 +14,7 @@ def directorySearch(directory):
             
         elif os.path.isfile(itemWithPath):
             if not isImageFile(item):
-                with open(os.path.join(output_directory, "Unprocessed.txt"), "a") as album_file:
+                with open(os.path.join(outputDir, "Unprocessed.txt"), "a") as album_file:
                     album_file.write(linux2windows(itemWithPath) + "\n")
             elif not item.startswith("._"):
                 imageDetected(itemWithPath)
@@ -37,7 +37,7 @@ def imageDetected(itemWithPath):
         for j in range(numDictFaces):
             match = face_recognition.compare_faces(knownFaces[j], person)
             if (match):
-                addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
+                addEntryInAlbumTXTFile(person, itemWithPath, outputDir)
                 
 
 def importDictionary(inputDictPath):
@@ -56,14 +56,15 @@ def importDictionary(inputDictPath):
         
     
 knownFaces = {}
+numDictFaces = 0
 inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candidates\actual")
-output_directory = windows2linux(r"C:\Users\amazi\Downloads\output")
-input_directory = windows2linux(r"C:\Users\amazi\Downloads\test")
+outputDir = windows2linux(r"C:\Users\amazi\Downloads\output")
+inputDir = windows2linux(r"C:\Users\amazi\Downloads\test")
 
 importDictionary(inputDictPath)
 
 import pickle
-outputPickleLocation = os.path.join(output_directory, "knownFaces.pickle")
+outputPickleLocation = os.path.join(outputDir, "knownFaces.pickle")
 with open(outputPickleLocation, 'wb') as file:
     pickle.dump(knownFaces, file)
-directorySearch(input_directory)
+directorySearch(inputDir)
