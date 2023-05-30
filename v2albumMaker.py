@@ -42,7 +42,7 @@ def imageDetected(itemWithPath):
 
 def importDictionary(inputDictPath):
     global knownFaces
-    numDictFaces = 0
+    global numDictFaces
     for item in os.listdir(inputDictPath):
         itemWithPath = os.path.join(inputDictPath, item)
         if isImageFile(item):
