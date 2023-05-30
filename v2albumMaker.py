@@ -7,17 +7,17 @@ def directorySearch(directory):
     print(directory)
     for item in os.listdir(directory):
         itemWithPath = os.path.join(directory, item)
+        
         if os.path.isdir(itemWithPath):
             directorySearch(itemWithPath)
             print(directory)
             
         elif os.path.isfile(itemWithPath):
-            if isImageFile(item):
-                if not item.startswith("._"):
-                    imageDetected(itemWithPath)
-            else:
+            if not isImageFile(item):
                 with open(os.path.join(output_directory, "Unprocessed.txt"), "a") as album_file:
                     album_file.write(linux2windows(itemWithPath) + "\n")
+            elif not item.startswith("._"):
+                imageDetected(itemWithPath)
                     
                     
 def imageDetected(itemWithPath):
