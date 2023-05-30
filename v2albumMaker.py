@@ -21,6 +21,8 @@ def directorySearch(directory):
                     
                     
 def imageDetected(itemWithPath):
+    global numDictFaces
+    global knownFaces
     try:
         image = face_recognition.load_image_file(itemWithPath)
     except Exception as e:
@@ -32,23 +34,28 @@ def imageDetected(itemWithPath):
     
     for i in range(len(face_locations)):
         person = face_encodings[i]
-        for j in range(numDictionaryFaces):
-            match = face_recognition.compare_faces(knownFacesLibrary[j], person)
+        for j in range(numDictFaces):
+            match = face_recognition.compare_faces(knownFaces[j], person)
             if (match):
                 addEntryInAlbumTXTFile(person, itemWithPath, output_directory)
                 
 
 def importDictionary(inputDictPath):
+    global knownFaces
+    numDictFaces = 0
     for item in os.listdir(inputDictPath):
         itemWithPath = os.path.join(inputDictPath, item)
         if isImageFile(item):
             headshot = face_recognition.load_image_file(itemWithPath)
-            knownFacesLibrary[numFaces] = face_recognition.face_encodings(headshot)[0]
-            numFaces += 1
+            face_encodings = face_recognition.face_encodings(headshot)
+            if len(face_encodings) > 0:
+                knownFaces[numDictFaces] = face_encodings[0]
+                numDictFaces += 1
+            else:
+                print("No face found in", item)
         
     
-knownFacesLibrary = 0
-numDictionaryFaces = 0
+knownFaces = {}
 inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candidates\actual")
 output_directory = windows2linux(r"C:\Users\amazi\Downloads\output")
 input_directory = windows2linux(r"C:\Users\amazi\Downloads\test")
