@@ -38,7 +38,16 @@ def imageDetected(itemWithPath):
     print(face_locations)
     print(face_encodings)
     
-# def importDictionary(inputDictPath):
+knownFacesLibrary = 0
+def importDictionary(inputDictPath):
+    numFaces = 0
+    for item in os.listdir(inputDictPath):
+        itemWithPath = os.path.join(inputDictPath, item)
+        if isImageFile(item):
+            headshot = face_recognition.load_image_file(itemWithPath)
+            knownFacesLibrary[numFaces] = face_recognition.face_encodings(headshot)[0]
+            numFaces += 1
+        
     
 
 inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candidates\actual")
