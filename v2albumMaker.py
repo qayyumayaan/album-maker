@@ -59,3 +59,11 @@ knownFaces = {}
 inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candidates\actual")
 output_directory = windows2linux(r"C:\Users\amazi\Downloads\output")
 input_directory = windows2linux(r"C:\Users\amazi\Downloads\test")
+
+importDictionary(inputDictPath)
+
+import pickle
+outputPickleLocation = os.path.join(output_directory, "knownFaces.pickle")
+with open(outputPickleLocation, 'wb') as file:
+    pickle.dump(knownFaces, file)
+directorySearch(input_directory)
