@@ -28,9 +28,12 @@ def imageDetected(itemWithPath):
     except Exception as e:
         print(f"Exception: {e}")
         return False
-        
-    face_locations = face_recognition.face_locations(image)
+    
+    face_locations = face_recognition.face_locations(image, model="cnn")
     face_encodings = face_recognition.face_encodings(image, face_locations)
+    
+    if not face_locations:
+        print("No faces detected in ", itemWithPath)
     
     for i in range(len(face_locations)):
         for j in range(numDictFaces):
