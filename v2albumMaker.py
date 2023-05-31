@@ -61,10 +61,15 @@ inputDictPath = windows2linux(r"C:\Users\amazi\Downloads\important-people\candid
 outputDir = windows2linux(r"C:\Users\amazi\Downloads\output")
 inputDir = windows2linux(r"C:\Users\amazi\Downloads\test")
 
-importDictionary(inputDictPath)
 
 import pickle
 outputPickleLocation = os.path.join(outputDir, "knownFaces.pickle")
-with open(outputPickleLocation, 'wb') as file:
-    pickle.dump(knownFaces, file)
+if os.path.exists(outputPickleLocation):
+    with open(outputPickleLocation, 'rb') as file:
+        knownFaces = pickle.load(file)
+else: 
+    importDictionary(inputDictPath)
+    with open(outputPickleLocation, 'wb') as file:
+        pickle.dump(knownFaces, file)
+
 directorySearch(inputDir)
