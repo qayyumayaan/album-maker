@@ -1,7 +1,6 @@
 from coreDependencies import windows2linux, linux2windows, isImageFile, addEntryInAlbumTXTFile
 import os
 import face_recognition
-from PIL import Image
 
 def directorySearch(directory):
     print(directory)
@@ -28,19 +27,26 @@ def imageDetected(itemWithPath):
     except Exception as e:
         print(f"Exception: {e}")
         return False
-    
-    face_locations = face_recognition.face_locations(image, model="cnn")
+
+    face_locations = face_recognition.face_locations(image)
+    # face_locations = face_recognition.face_locations(image)
     face_encodings = face_recognition.face_encodings(image, face_locations)
     
-    if not face_locations:
-        print("No faces detected in ", itemWithPath)
-    
+    print(itemWithPath)
+    print(len(face_locations))
+        
+    if (face_locations == [] or face_encodings == []):
+        with open(os.path.join(outputDir, "NoFacesDetected.txt"), "a") as album_file:
+            album_file.write(linux2windows(itemWithPath) + "\n")
+        return False
+
     for i in range(len(face_locations)):
         for j in range(numDictFaces):
             match = face_recognition.compare_faces(knownFaces[j], face_encodings[i])
             print(match)
             if (match):
                 addEntryInAlbumTXTFile(face_encodings[i], itemWithPath, outputDir)
+    return True
                 
 
 def importDictionary(inputDictPath):
