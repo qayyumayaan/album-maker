@@ -33,11 +33,11 @@ def imageDetected(itemWithPath):
     face_encodings = face_recognition.face_encodings(image, face_locations)
     
     for i in range(len(face_locations)):
-        person = face_encodings[i]
         for j in range(numDictFaces):
-            match = face_recognition.compare_faces(knownFaces[j], person)
+            match = face_recognition.compare_faces(knownFaces[j], face_encodings[i])
+            print(match)
             if (match):
-                addEntryInAlbumTXTFile(person, itemWithPath, outputDir)
+                addEntryInAlbumTXTFile(face_encodings[i], itemWithPath, outputDir)
                 
 
 def importDictionary(inputDictPath):
